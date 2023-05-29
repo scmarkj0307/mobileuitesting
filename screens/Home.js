@@ -3,21 +3,26 @@ import axios from 'axios';
 import { View, StyleSheet, Text, Image, Tex  } from 'react-native';
 import Button from '../components/Button';
 import { styles } from '../style/styles';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { PATIENT_URL } from '../config/APIRoutes';
 
 export default function Home({navigation}) {
 
-    const fetchData = async()=>{
-        try {
-            const response = await axios.get("http://192.168.254.198:8080/api/v1/admin/hello");
-            const data = response?.data;
-            console.log(data);
-        } catch (error) {
-            
-        }
+  const checkIfValidToken = async () => {
+    try {
+      const token = await AsyncStorage.getItem('token');
+      const response = await axios.post(`${PATIENT_URL}/ifValidPatient/${token}`);
+      if (response.data.message === 'valid') {
+        navigation.navigate('Patient');
+      }
+    } catch (error) {
+      console.log(error.response?.data?.message || error.message);
     }
-    useEffect(()=>{
-        fetchData();
-    },[]);
+  };
+
+  useEffect(() => {
+    checkIfValidToken();
+  });
 
     const design = StyleSheet.create({
       subHeader:{

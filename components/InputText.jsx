@@ -4,7 +4,7 @@ import { styles } from '../style/styles';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
 
 
-export default function InputText({onChangeText, name, value, placeholder, isSecure, iconName, iconFunction,iconColor, isEditable}) {
+export default function InputText({onChangeText, name, value, placeholder, isSecure, iconName, iconFunction,iconColor, isEditable, keyboardType}) {
   return <View style={styles.inputWrapper}>
         <TextInput
         value={value}
@@ -15,6 +15,7 @@ export default function InputText({onChangeText, name, value, placeholder, isSec
         underlineColorAndroid="#fff"
         secureTextEntry={isSecure} 
         editable={isEditable}
+        keyboardType={keyboardType}
     />
     {
       iconName&&(

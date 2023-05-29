@@ -10,7 +10,7 @@ export default function Button({title, onPress, bgColor, textColor,  haveBorder}
         borderRadius: 40,
         borderColor:haveBorder ? '#fff' : '',
         borderWidth: haveBorder ? 2 : 0,
-        
+        zIndex: -10
     },
     text:{
         color:textColor,

@@ -1,4 +1,7 @@
 import { StyleSheet } from "react-native";
+import { Dimensions } from 'react-native'
+
+const { width, height }= Dimensions.get("window");
 export const styles = StyleSheet.create({
     containerHeaderBlue:{
       backgroundColor: '#06b6d4',
@@ -17,6 +20,11 @@ export const styles = StyleSheet.create({
         gap: 16,
         padding:20,
         
+      },
+      containerGray: {
+        width:'100%',
+        backgroundColor: '#f4f4f5',
+        flex:1
       },
       containerWhite: {
         flex: 1,
@@ -78,6 +86,7 @@ export const styles = StyleSheet.create({
       subContainer:{
         width:'100%',
         maxWidth:450,
+        zIndex:-10,
         display:'flex',
         flexDirection:"column",
         justifyContent:'center',
