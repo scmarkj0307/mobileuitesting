@@ -50,7 +50,7 @@ function Services({navigation, appointmentDetails, setAppointmentDetails}) {
   const buttonContinue = () =>{
     if(selectedServices.length < 1) return Alert.alert("Please fill up empty field");
     setAppointmentDetails({...appointmentDetails, dentalServices:selectedServices, totalServiceTime:calculateTotalServiceTime()});
-    
+    navigation.navigate('Schedule');
   }
   const calculateTotalServiceTime = () =>{
     const timeEnd = selectedServices.map((val)=>{

@@ -1,19 +1,48 @@
-import React,{ useEffect } from 'react';
-import { View, Dimensions,Text,BackHandler,ToastAndroid, Button, ImageBackground, Image, StyleSheet } from 'react-native';
+import React,{ useEffect, useState } from 'react';
+import { View, Dimensions,Text,BackHandler,ToastAndroid,TouchableHighlight, ImageBackground, Image, StyleSheet,ScrollView } from 'react-native';
 import { styles } from '../../style/styles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import IonicsIcon from 'react-native-vector-icons/Ionicons';
+import axios from 'axios';
+import { APPOINTMENT_URL } from '../../config/APIRoutes';
+import moment from 'moment';
+import AppointmentCard from '../../components/AppointmentCard';
 
-function Home({navigation, patient}) {
+function Home({navigation,setAppointmentId, patient}) {
     const {height, width} = Dimensions.get("screen");
+    const [patientAppointment, setPatientAppointment] = useState([]);
+    const fetchPatientAppointment = async() =>{
+      try {
+        const response = await axios.get(`${APPOINTMENT_URL}/patient/${patient.patientId}`);
+        if(response.data){
+          setPatientAppointment(response.data);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
     useEffect(() => {
+      fetchPatientAppointment();
       const disableBackButton = () => {
         ToastAndroid.show('Back button is disabled', ToastAndroid.SHORT);
         return true; 
       };
       const backHandler = BackHandler.addEventListener('hardwareBackPress', disableBackButton);
       return () => { backHandler.remove(); };
-    }, []);
+    }, [fetchPatientAppointment]);
+    
+    const currentDate = moment(new Date()).format("LL");
+    const todaysAppointment = patientAppointment.filter((val)=>{  return currentDate === moment(val.appointmentDate).format('LL')&& val.status === "APPROVED" ; });
+    const upcomingAppointment = patientAppointment.filter(val=>{ 
+    return (currentDate !== moment(val.appointmentDate).format('LL') && moment().isBefore(moment(val.appointmentDate)))
+    && val.status === "APPROVED"; 
+    });
+
+
+    const viewHandleButton = (value) =>{
+      setAppointmentId(value);
+      navigation.navigate("Summary")
+    }
     return patient && (
       <View style={{...styles.containerGray, height:height, justifyContent:'flex-start', alignItems:'flex-start'}}>
           {/* <View style={{position: 'absolute', top: 0,zIndex: 50, width: width, height: height / 9, borderBottomRightRadius: 100,overflow: 'hidden',}}>
@@ -34,15 +63,10 @@ function Home({navigation, patient}) {
             
           </View>
           
-          <View style={{backgroundColor:'#f5f5f5', width:'100%', height:(height/2.3), borderTopLeftRadius:30, borderTopRightRadius:30, position:'absolute', bottom:0, overflow:'hidden', padding:20, zIndex:50}}>
-            <View style={{display:'flex', flexDirection:'column', gap:10,}}>
-              <Text style={{fontSize:18, fontWeight:'bold', color:'#3f3f46'}}>Today's Appointment</Text>
-              <View style={{backgroundColor:'#06b6d4', width:'100%', padding:15, borderRadius:5, borderLeftColor:'#082f49', borderLeftWidth:2}}>
-                <Text style={{color:'#fff', fontSize:16, fontWeight:'bold'}}>No Appointment</Text>
-              </View>
-            </View>
-            
-          </View>
+          <ScrollView style={{backgroundColor:'#fafafa', width:'100%', height:(height/2.3), borderTopLeftRadius:30, borderTopRightRadius:30, position:'absolute', bottom:0, paddingHorizontal:15, paddingVertical:20, zIndex:50, display:'flex', flexDirection:'column', gap:10, paddingBottom:70}}>
+            <AppointmentCard title="Today's Appointment" dataList={todaysAppointment} bgColor={'#ccfbf1'}fontColor={'#10b981'} subColor={'#06b6d4'} viewEvent={viewHandleButton} />
+            <AppointmentCard title='Upcoming Appointment' dataList={upcomingAppointment} bgColor={'#fef3c7'} fontColor={'#f59e0b'} subColor={'#f59e0b'} showDate={true} viewEvent={viewHandleButton}  />
+          </ScrollView>
         
 
 

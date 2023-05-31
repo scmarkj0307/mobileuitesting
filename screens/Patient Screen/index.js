@@ -10,6 +10,7 @@ import { PATIENT_URL } from '../../config/APIRoutes';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
 import IonicsIcon from 'react-native-vector-icons/Ionicons';
 import Settings from './Settings';
+import AppointmentDetails from './AppointmentDetails';
 
 const navLinks = [
   {
@@ -39,6 +40,7 @@ const navLinks = [
 function Index({navigation}) {
   const Stack = createNativeStackNavigator();
   const [patientDetails, setPatientDetails] = useState(null);
+  const [appointmentId, setAppointmentId] = useState("");
 
   const fetchPatientInformation= async()=> {
     try {
@@ -54,11 +56,11 @@ function Index({navigation}) {
   useEffect(()=>{ fetchPatientInformation(); },[fetchPatientInformation]);
 
   const navigateToLink = (link) => navigation.navigate(`${link}`);
-  return (
+  return patientDetails &&  (
     <>
       <Stack.Navigator initialRouteName='Dashboard'>
         <Stack.Screen name='Dashboard' options={{headerShown: false }}>
-            {props=>React.cloneElement(<Home />, { patient:patientDetails, ...props})}
+            {props=>React.cloneElement(<Home />, { patient:patientDetails, setAppointmentId:setAppointmentId, ...props})}
         </Stack.Screen>
         <Stack.Screen name='Appointment' options={{headerShown: false }}>
             {props=>React.cloneElement(<Appointment />, { patientId:patientDetails.patientId, ...props})}
@@ -66,6 +68,11 @@ function Index({navigation}) {
         <Stack.Screen name='Settings' options={{headerShown: false }}>
             {props=>React.cloneElement(<Settings />, {  ...props})}
         </Stack.Screen>
+
+        <Stack.Screen name='Summary' options={{headerTitle:"Appointment Details" }}>
+            {props=>React.cloneElement(<AppointmentDetails />, { appointmentId:appointmentId, setAppointmentId:setAppointmentId, ...props})}
+        </Stack.Screen>
+
     </Stack.Navigator>
 
 
