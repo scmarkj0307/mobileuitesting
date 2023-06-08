@@ -9,30 +9,16 @@ import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import Button from '../../../components/Button';
 import ToastFunction from '../../../config/toastConfig';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
+import { useSelector } from 'react-redux';
 
-function Services({navigation, appointmentDetails, setAppointmentDetails}) {
+const Services = React.memo(({navigation, appointmentDetails, setAppointmentDetails})=>{
   const {height} = Dimensions.get('screen');
-  const [servicesList, setServiceList] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [isActive, setActive] = useState({
     idx:[],
     status: false
   });
-  const [selectedServices, setSelectedServices] = useState([])
-
-  const fetchServices = async() =>{
-    try {
-        const response = await axios.get(`${SERVICES_URL}/`);
-        if(response.data){
-            setServiceList(response.data);
-            setLoading(false);
-        }
-    } catch (error) {
-        console.log(error);
-        setLoading(false);
-    }
-  }
-  useEffect(()=>{ fetchServices() },[]);
+  const [selectedServices, setSelectedServices] = useState([]);
+  const {services } = useSelector((state)=>{return state.services})
 
   const selectServiceEvent = (idx, serviceId) => {
     if (isActive.idx.includes(idx) ) {
@@ -54,7 +40,7 @@ function Services({navigation, appointmentDetails, setAppointmentDetails}) {
   }
   const calculateTotalServiceTime = () =>{
     const timeEnd = selectedServices.map((val)=>{
-      const result = servicesList.filter((service)=>{
+      const result = services.filter((service)=>{
         return service.serviceId === val;
       }).map((val)=>{return val.duration; });
       return  result;
@@ -73,11 +59,7 @@ function Services({navigation, appointmentDetails, setAppointmentDetails}) {
     const convertTotalTime = moment.duration(total);
     return moment.utc(convertTotalTime.asMilliseconds()).format('HH:mm:ss');
   }
-  return (
-    <>
-        { loading && ( <Loader loading={loading} />) }
-        {
-            servicesList && (
+  return services && (
                 <>
                     <ScrollView style={{...styles.containerGray ,maxHeight:height, padding:20, flexGrow:1, gap:10, flexDirection: 'column', position:'relative', zIndex:-50}}>
                     <Toast />
@@ -88,7 +70,7 @@ function Services({navigation, appointmentDetails, setAppointmentDetails}) {
                     
                     <View style={{flex:1, rowGap:20, position:'relative', zIndex:-50}}>
                         {
-                            servicesList.map((val, idx)=>(
+                            services.map((val, idx)=>(
                                 <Pressable style={{width:'100%', height:'auto', backgroundColor:'#06b6d4', borderRadius:10, padding:20, }} key={idx} onPress={()=>{selectServiceEvent(idx,val.serviceId)}}>
                                     <View style={{height:'auto',  flex:1,justifyContent:'space-between', alignItems:'flex-start', flexDirection:'row', marginBottom:5}}>
                                         <Text style={{fontSize:20, textTransform:'capitalize', fontWeight:'bold', color:'#fff',}}>{val.type}</Text>
@@ -123,9 +105,5 @@ function Services({navigation, appointmentDetails, setAppointmentDetails}) {
                 </View>
                 </>
             )
-        }
-    </>
-  )
-}
-
+})
 export default Services

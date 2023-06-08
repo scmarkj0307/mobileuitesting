@@ -5,24 +5,26 @@ import Button from '../components/Button';
 import { styles } from '../style/styles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { PATIENT_URL } from '../config/APIRoutes';
+import { useDispatch, useSelector } from 'react-redux';
+import { checkIfValidPatient } from '../redux/action/PatientVerification';
 
-export default function Home({navigation}) {
+const Home = React.memo(({ navigation }) => {
+  const dispatch = useDispatch();
+  const { loading, valid, invalid } = useSelector((state) => state.patientVerification);
 
   const checkIfValidToken = async () => {
-    try {
-      const token = await AsyncStorage.getItem('token');
-      const response = await axios.post(`${PATIENT_URL}/ifValidPatient/${token}`);
-      if (response.data.message === 'valid') {
-        navigation.navigate('Patient');
-      }
-    } catch (error) {
-      console.log(error.response?.data?.message || error.message);
-    }
+    const token = await AsyncStorage.getItem('token');
+    dispatch(checkIfValidPatient(token));
   };
 
   useEffect(() => {
     checkIfValidToken();
-  });
+  }, []);
+
+  useEffect(() => {
+    if (valid) { navigation.navigate('Patient'); }
+    if (invalid) {console.log(invalid);}
+  }, [loading, valid, invalid]);
 
     const design = StyleSheet.create({
       subHeader:{
@@ -32,7 +34,8 @@ export default function Home({navigation}) {
       }
       
     })
-  return (
+    
+  return(
     <View style={styles.containerBlue}>
       <Image source={require('../assets/images/logo2.jpg')} style={{ width:250, height:250, borderRadius: 300 }}/>
       <View style={design.subHeader}>
@@ -45,4 +48,6 @@ export default function Home({navigation}) {
       </View>
     </View>
   )
-}
+})
+
+export default Home;

@@ -3,15 +3,18 @@ import { View, Image, StyleSheet, Text, Dimensions, text } from 'react-native';
 import { styles } from '../style/styles';
 import Button from '../components/Button';
 import InputText from '../components/InputText';
-import axios from 'axios';
-import { PATIENT_URL } from '../config/APIRoutes';
 import ToastFunction from '../config/toastConfig';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useDispatch, useSelector } from 'react-redux';
+import { loginPatientAccount } from '../redux/action/PatientVerification';
+import Loader from '../components/Loader';
 
-export default function Login({navigation}) {
+const Login = React.memo(({navigation}) => {
   const navigate = useNavigation();
+  const dispatch = useDispatch();
+  const {loading, token, error} = useSelector((state)=>{return state.patientVerification});
   const [userData, setUserData] = useState({
     username: '',
     password: ''
@@ -20,37 +23,30 @@ export default function Login({navigation}) {
 
   const onChangeText = (name, value) => {
     setUserData({ ...userData, [name]: value });
-    console.log(userData);
   };
 
-  const loginAccount = async () => {
-    try {
-      const response = await axios.post(`${PATIENT_URL}/login`, userData);
-      if (response.data) {
-        await AsyncStorage.setItem('token', response.data.message);
-        ToastFunction('success', "Login Successfully!");
-        navigation.navigate("Patient");
-      }
-    } catch (error) {
-      ToastFunction('error', error.response.data.message);
+  const checkIfValidAccount = async() =>{
+    if(!loading && token){
+      await AsyncStorage.setItem('token', token);
+      setUserData({ username: '', password: '' })
+      navigation.navigate("Patient");
     }
-  };
+    else if (!loading && error) {
+      ToastFunction('error', error);
+    }
+  }
+  useEffect(() => {
+    checkIfValidAccount();
+  }, [loading, error, token]);
 
   const loginButtonHandler = () => {
     if (!userData.username || !userData.password) {
       return ToastFunction('error', 'Fill up empty field');
     }
-    loginAccount();
+    dispatch(loginPatientAccount(userData));
   };
-
-  useEffect(() => {
-    navigate.setOptions({
-      headerBackTitle: 'Home'
-    });
-  }, []);
-
   return (
-    <View style={styles.containerWhite}>
+      <View style={styles.containerWhite}>
       <Toast />
       <View style={styles.subContainer}>
         <Image
@@ -98,5 +94,7 @@ export default function Login({navigation}) {
         </Text>
       </View>
     </View>
-  );
-}
+  )
+})
+
+export default Login;

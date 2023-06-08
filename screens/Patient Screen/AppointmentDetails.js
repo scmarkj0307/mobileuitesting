@@ -5,43 +5,27 @@ import QRCode from 'react-native-qrcode-svg';
 import { APPOINTMENT_URL } from '../../config/APIRoutes';
 import Loader from '../../components/Loader';
 import moment, { duration } from 'moment';
+import { useSelector } from 'react-redux';
 
-function AppointmentDetails({navigation, appointmentId}) {
+const AppointmentDetails = React.memo(({navigation, appointmentId})=>{
   const {height} = Dimensions.get('screen');
-  const [details, setDetails] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const fetchAppointment = async() => {
-    try {
-      const response = await axios.get(`${APPOINTMENT_URL}/${appointmentId}`);
-      if(response.data){
-        setDetails(response.data);
-        setLoading(false);
-      }
-    } catch (error) { console.log(error); setLoading(false);}
-  }
-  useEffect(()=>{
-    fetchAppointment();
-  },[]);
+  const {appointment} = useSelector((state)=>{return state.appointment});
   
+  const details = appointment.find((val) => val.appointmentId === appointmentId);
   const timeDuration = moment.duration(moment(details?.timeEnd, "HH:mm:ss").diff(moment(details?.timeStart, "HH:mm:ss")));
-  return <>
-    { loading && <Loader loading={loading} />}
-    {
-      details &&(
+  return details &&(
         <ScrollView style={{maxHeight:height,width:'100%',padding:20, position:'relative',backgroundColor:"#f4f4f5", position:'relative' }}>
           
-            {
-                appointmentId && <View style={{width:'auto', padding:10, display:'flex', alignItems:'center'}}>
+            <View style={{width:'auto', padding:10, display:'flex', alignItems:'center'}}>
                   <View style={{backgroundColor:"#fff", width:'auto', height:'auto',padding:10}}>
                       <QRCode
-                        value={`${appointmentId}`}
-                        size={200}
+                        value={details.appointmentId}
+                        size={300}
                         color="#fff" // QR code color
                         backgroundColor="#0e7490" // Background color,
                     />
                   </View>
-                </View>
-            }
+            </View>
             <View style={{flexGrow:1, backgroundColor:"#fff", marginTop:20, padding:15, borderRadius:20}}>
               <Text style={{fontSize:16, fontWeight:'bold'}}>Appointment Information</Text>
               <View style={{marginTop:10,flexGrow:1, rowGap:2}}>
@@ -64,8 +48,6 @@ function AppointmentDetails({navigation, appointmentId}) {
             <View style={{marginTop:50}}></View>
         </ScrollView>
       )
-    }
-  </>
-}
+})
 
 export default AppointmentDetails
