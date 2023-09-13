@@ -10,6 +10,7 @@ import {
     VALID_PATIENT_SUCCESS
 } from "../ActionType";
 import { PATIENT_URL } from '../../config/APIRoutes';
+import ToastFunction from "../../config/toastConfig";
 
 export const loginPatientAccount = (data) => {
   return async (dispatch) => {
@@ -20,13 +21,14 @@ export const loginPatientAccount = (data) => {
       const response = await axios.post(`${PATIENT_URL}/login`, data);
       dispatch({
         type: LOGIN_PATIENT_SUCCESS,
-        payload: response.data.message
+        payload: response.data
       });
     } catch (error) {
       dispatch({
         type: LOGIN_PATIENT_FAILED,
         error: error.response && error.response.data.message
       });
+      ToastFunction("error",error.response.data.message)
     }
   };
 };
@@ -41,12 +43,12 @@ export const checkIfValidPatient = (token) => {
       const response = await axios.post(`${PATIENT_URL}/ifValidPatient/${token}`);
       dispatch({
         type: VALID_PATIENT_SUCCESS,
-        payload: response.data
+        payload: response.data.message
       });
     } catch (error) {
       dispatch({
         type: VALID_PATIENT_FAILED,
-        error: error.response && error.response.data.message
+        error: error.response
       });
     }
   };
@@ -54,9 +56,6 @@ export const checkIfValidPatient = (token) => {
 
 export const logoutPatient = () => {
   return async (dispatch) => {
-    dispatch({
-      type: LOGOUT_PATIENT_REQUEST
-    });
     dispatch({
       type: LOGOUT_PATIENT_SUCCESS
     });

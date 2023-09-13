@@ -22,8 +22,9 @@ const Home = React.memo(({ navigation }) => {
   }, []);
 
   useEffect(() => {
-    if (valid) { navigation.navigate('Patient'); }
-    if (invalid) {console.log(invalid);}
+    if (valid === "Valid") { navigation.navigate('Patient'); }
+    if(valid==="Dentist") { navigation.navigate("Dentist") }
+    if (invalid) {}
   }, [loading, valid, invalid]);
 
     const design = StyleSheet.create({

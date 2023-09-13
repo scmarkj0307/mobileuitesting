@@ -11,7 +11,7 @@ import ToastFunction from '../../../config/toastConfig';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import { useSelector } from 'react-redux';
 
-const Services = React.memo(({navigation, appointmentDetails, setAppointmentDetails})=>{
+const Services = React.memo(({navigation, treatmentDetails, setTreatmentDetails })=>{
   const {height} = Dimensions.get('screen');
   const [isActive, setActive] = useState({
     idx:[],
@@ -40,8 +40,8 @@ const Services = React.memo(({navigation, appointmentDetails, setAppointmentDeta
       if (selectedServices.includes(val.serviceId)) { return acc + parseInt(val.price); }
       return acc;
     }, 0);
-    setAppointmentDetails({...appointmentDetails, dentalServices:selectedServices});
-    navigation.navigate('Schedule');
+    setTreatmentDetails({...treatmentDetails, dentalServices:selectedServices, totalServiceTime:calculateTotalServiceTime(), totalAmount:totalAmount});
+    navigation.navigate('Teeth');
   }
   const calculateTotalServiceTime = () =>{
     const timeEnd = selectedServices.map((val)=>{

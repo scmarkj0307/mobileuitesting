@@ -1,6 +1,9 @@
 // PatientReducer.js
 
 import {
+  ALL_PATIENT_FAILED,
+  ALL_PATIENT_REQUEST,
+  ALL_PATIENT_SUCCESS,
   FETCH_PATIENT_FAILED,
   FETCH_PATIENT_REQUEST,
   FETCH_PATIENT_SUCCESS,
@@ -11,13 +14,20 @@ import {
 const initialState = {
 };
 
-const patientReducer = (state = initialState, action) => {
+const patientReducer = (state = {}, action) => {
   switch (action.type) {
     case FETCH_PATIENT_REQUEST,
+    ALL_PATIENT_REQUEST,
     LOGIN_PATIENT_REQUEST:
       return{
         ...state,
         loading: true,
+      }
+    case ALL_PATIENT_SUCCESS:
+      return{
+        ...state,
+        patientList:action.payload,
+        loading:false
       }
     case FETCH_PATIENT_SUCCESS:
       return {
@@ -25,7 +35,8 @@ const patientReducer = (state = initialState, action) => {
         patient: action.payload, // Update patient with action.payload
         loading: false,
       };
-    case FETCH_PATIENT_FAILED:
+    case FETCH_PATIENT_FAILED,
+    ALL_PATIENT_FAILED:
       return {
         ...state,
         error: action.error,

@@ -24,7 +24,8 @@ export const styles = StyleSheet.create({
       containerGray: {
         width:'100%',
         backgroundColor: '#f4f4f5',
-        flex:1
+        flex:1,
+        overflow: 'visible'
       },
       containerWhite: {
         flex: 1,
@@ -98,5 +99,16 @@ export const styles = StyleSheet.create({
         display:'flex',
         flexDirection:"column",
         gap:8
-      }
+      },
+      shadow: {
+        shadowColor: '#000',      // Shadow color
+        shadowOpacity: 0.1,       // Shadow opacity (0.0 - 1.0) - Increase opacity for a darker shadow
+        shadowRadius: 2,          // Shadow radius
+        elevation: 2,             // Elevation (for Android)
+        // Additional shadow properties (optional)
+        shadowOffset: {
+          width: 0,              // Horizontal offset
+          height: 2,             // Vertical offset
+        },
+      },
 })

@@ -9,12 +9,14 @@ import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginPatientAccount } from '../redux/action/PatientVerification';
+import { dentistLogin } from '../redux/action/DentistAction';
 import Loader from '../components/Loader';
 
 const Login = React.memo(({navigation}) => {
   const navigate = useNavigation();
   const dispatch = useDispatch();
-  const {loading, token, error} = useSelector((state)=>{return state.patientVerification});
+  const patient = useSelector((state)=>{return state.patientVerification});
+  const dentist = useSelector((state)=>{return state.dentist });
   const [userData, setUserData] = useState({
     username: '',
     password: ''
@@ -26,24 +28,29 @@ const Login = React.memo(({navigation}) => {
   };
 
   const checkIfValidAccount = async() =>{
-    if(!loading && token){
-      await AsyncStorage.setItem('token', token);
+    if(!patient.loading && patient.token){
+      await AsyncStorage.setItem('token', patient.token.token);
       setUserData({ username: '', password: '' })
       navigation.navigate("Patient");
     }
-    else if (!loading && error) {
-      ToastFunction('error', error);
+    if(!dentist.loading && dentist.token){
+      await AsyncStorage.setItem('token', dentist.token.token);
+      setUserData({ username: '', password: '' })
+      navigation.navigate("Dentist");
     }
   }
   useEffect(() => {
     checkIfValidAccount();
-  }, [loading, error, token]);
+  }, [patient.loading, patient.token,dentist.token]);
 
-  const loginButtonHandler = () => {
+  const loginButtonHandler = async() => {
     if (!userData.username || !userData.password) {
       return ToastFunction('error', 'Fill up empty field');
     }
     dispatch(loginPatientAccount(userData));
+    if(patient.token === ""){
+      dispatch(dentistLogin(userData));
+    }
   };
   return (
       <View style={styles.containerWhite}>

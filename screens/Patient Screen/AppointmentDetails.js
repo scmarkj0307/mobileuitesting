@@ -17,19 +17,25 @@ const AppointmentDetails = React.memo(({navigation, appointmentId})=>{
         <ScrollView style={{maxHeight:height,width:'100%',padding:20, position:'relative',backgroundColor:"#f4f4f5", position:'relative' }}>
           
             <View style={{width:'auto', padding:10, display:'flex', alignItems:'center'}}>
-                  <View style={{backgroundColor:"#fff", width:'auto', height:'auto',padding:10}}>
+                  {/* <View style={{backgroundColor:"#fff", width:'auto', height:'auto',padding:10}}>
                       <QRCode
-                        value={details.appointmentId}
-                        size={300}
+                        value={"Hello"}
                         color="#fff" // QR code color
                         backgroundColor="#0e7490" // Background color,
                     />
+                  </View> */}
+                  
+                    <View style={{backgroundColor:"#fff", width:'auto', height:'auto',padding:10}}>
+                      <QRCode
+                          value={appointmentId}
+                          size={200}
+                      />
                   </View>
             </View>
             <View style={{flexGrow:1, backgroundColor:"#fff", marginTop:20, padding:15, borderRadius:20}}>
               <Text style={{fontSize:16, fontWeight:'bold'}}>Appointment Information</Text>
               <View style={{marginTop:10,flexGrow:1, rowGap:2}}>
-                <Text style={{fontSize:12, }}>Dentist: Dr. <Text style={{fontWeight:"bold"}}>{details.dentist.fullname}</Text></Text>
+                <Text style={{fontSize:12, }}>Dentist: <Text style={{fontWeight:"bold"}}>Dr. {details.dentist.fullname}</Text></Text>
                 <Text style={{fontSize:12, }}>Appointment Date: <Text style={{fontWeight:"bold"}}>{moment(details.appointmentDate).format("dddd, MMMM D YYYY")}</Text></Text>
                 <Text style={{fontSize:12, }}>Service Duration: <Text style={{fontWeight:"bold"}}>{timeDuration.asHours()>0 ? `${timeDuration.hours()} hour ${timeDuration.asMinutes()==="0" ?  ``: `and ${timeDuration.minutes()} minutes`}`:`${timeDuration.minutes()} minutes`}</Text></Text>
               </View>
@@ -37,12 +43,14 @@ const AppointmentDetails = React.memo(({navigation, appointmentId})=>{
             <View style={{flexGrow:1, backgroundColor:"#fff", marginTop:20, padding:15, borderRadius:20}}>
               <Text style={{fontSize:16, fontWeight:'bold'}}>Dental Services</Text>
               {
+                details.dentalServices.length > 0 ? 
                 details.dentalServices.map((val, idx)=>(
                   <View style={{marginTop:10,flexGrow:1, rowGap:2}} key={idx}>
                     <Text style={{fontSize:14, fontWeight:"bold", flexGrow:1, alignItems:'center',justifyContent:'center' }}>{val.name} <Text style={{fontSize:10, color:"#06b6d4"}}>({val.type})</Text></Text>
                     <Text style={{fontSize:12, }}>{val.description}</Text>
                 </View>
                 ))
+                :<Text>For Dentist Viewing</Text>
               }
             </View>
             <View style={{marginTop:50}}></View>
