@@ -17,7 +17,7 @@ function Home({setSideNavShow}) {
 
 
     // const currentPatient = appointment.filter((val)=>val.status==="PROCESSING" && moment(val.appointmentDate,"YYYY-MM-DD").isSame(moment(), 'day'));
-    const currentPatient = appointment.filter((val)=>val.status==="PROCESSING" || val.status==="APPROVED");
+    const currentPatient = appointment.filter((val)=>val.status==="PROCESSING");
 
     return activeDentist && (
       <View style={{...styles.containerGray,height:height, width:width,position:'relative'}}>

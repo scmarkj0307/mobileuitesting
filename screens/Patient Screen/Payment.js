@@ -2,14 +2,13 @@ import {View, Pressable, Text, ScrollView,TouchableHighlight,Dimensions,Image,Al
 import { styles } from '../../style/styles';
 import Title from '../../components/Title';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchPayment } from '../../redux/action/PaymentAction';
+
 import React,{ useEffect, useState } from 'react';
 import * as ImagePicker from 'expo-image-picker';
 import moment from 'moment';
 import gcashLogo from '../../assets/images/gcashlogo.png';
 import paymayaLogo from '../../assets/images/paymayalogo.png';
 import { createPayment } from '../../redux/action/PaymentAction';
-import { fetchInstallmentByPatient } from '../../redux/action/InstallmentAction';
 
 const Payment = ({navigation}) =>{
     const dispatch = useDispatch();
@@ -24,10 +23,6 @@ const Payment = ({navigation}) =>{
     });
     const [receipt, setReceipt] = useState("");
 
-    useEffect(()=>{
-        dispatch(fetchPayment(patient.patientId));
-        dispatch(fetchInstallmentByPatient(patient.patientId))
-    },[]);
 
     const handleImageUpload = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({

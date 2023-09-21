@@ -77,8 +77,12 @@ export const fetchChanges = (data)=>{
 export const createTreatment = (data) =>{
     return async dispatch=>{
         try {
-            await axios.post(`${APPOINTMENT_URL}/treatment`,data);
-            
+            const response = await axios.post(`${APPOINTMENT_URL}/treatment`,data);
+            dispatch({
+                type: CREATE_APPOINTMENT_SUCCESS,
+                payload: response.data
+            });
+            socket.emit("appointment_changes",{value:response.data})
         } catch (error) {
             
         }

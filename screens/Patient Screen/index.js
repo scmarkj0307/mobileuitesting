@@ -17,6 +17,8 @@ import Loader from '../../components/Loader';
 import { fetchAppointment,fetchChanges } from '../../redux/action/AppointmentAction';
 import { fetchAppointmentFee } from '../../redux/action/AppointmentFeeAction';
 import { fetchPatientMessage } from '../../redux/action/MessageAction';
+import { fetchPayment } from '../../redux/action/PaymentAction';
+import { fetchInstallmentByPatient } from '../../redux/action/InstallmentAction';
 import Payment from './Payment';
 import Drawer from '../../components/CustomDrawer';
 import Message from './Message/index';
@@ -62,6 +64,8 @@ const Main = React.memo(({navigation})=> {
     if (patient && patient.patient) {
       dispatch(fetchAppointment(patient.patient.patientId));
       dispatch(fetchPatientMessage(patient.patient.patientId));
+      dispatch(fetchPayment(patient.patient.patientId));
+      dispatch(fetchInstallmentByPatient(patient.patient.patientId))
       dispatch(fetchAppointmentFee());
     }
   };

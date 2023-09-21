@@ -105,7 +105,7 @@ function TreatmentModal({setModal,treatmentData}) {
         }
         const data = {
             appointmentId: treatmentData.appointmentId,
-            services: dentalServices.map((val)=>val.serviceId),
+            dentalServices: dentalServices.map((val)=>val.serviceId),
             teeth: selectedTeeth,
             timeSubmitted:moment().format("HH:mm:ss"),
             timeDuration:calculateTotalServiceTime(),
@@ -115,7 +115,11 @@ function TreatmentModal({setModal,treatmentData}) {
             paymentType:paymentType,
             amount:totalAmount
         }
+        if(data.dentalServices.length<0 || !data.startOfTreatment || data.treatmentNumber || data.treatmentType || !data.paymentType){
+            toastFunction("error","Fill up empty field");
+        }
         dispatch(createTreatment(data));
+        setModal(false);
     }
 
     const calculateTotalServiceTime = () =>{
