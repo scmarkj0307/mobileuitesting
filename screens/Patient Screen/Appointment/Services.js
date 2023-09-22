@@ -41,7 +41,7 @@ const Services = React.memo(({navigation, appointmentDetails, setAppointmentDeta
       return acc;
     }, 0);
     setAppointmentDetails({...appointmentDetails, dentalServices:selectedServices});
-    navigation.navigate('Schedule');
+    navigation.navigate('Dentist');
   }
   const calculateTotalServiceTime = () =>{
     const timeEnd = selectedServices.map((val)=>{

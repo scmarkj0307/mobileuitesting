@@ -12,6 +12,7 @@ import { Toast } from 'react-native-toast-message/lib/src/Toast';
 
 const Schedule = ({ navigation, appointmentDetails, setAppointmentDetails }) => {
   const { appointment } = useSelector((state) => state.appointment);
+  const schedule = useSelector((state) => state.schedule.schedule);
   const dateRef = useRef("");
   const [showPicker, setShowPicker] = useState(false);
   const [timePicker, setShowTimePicker] = useState(false);
@@ -98,6 +99,28 @@ const Schedule = ({ navigation, appointmentDetails, setAppointmentDetails }) => 
       const newHour = moment(newTime);
 
     setTimeStartList(newTimeList);
+
+    setTimeStartList((prev)=>{
+      let updatedSchedList = [...prev];
+      const filteredSchedule = schedule.filter((val)=>moment(appointmentDetails.date, "YYYY-MM-DD").startOf('day').isSame(moment(schedule[0].dateSchedule, "YYYY-MM-DD").startOf('day')) && val.dentist.dentistId === appointmentDetails.dentist);
+
+      if(filteredSchedule.length > 0) {
+        const indicesScheduleToRemain = [];
+        for(let x = 0; x<filteredSchedule.length; x++){
+          let start = timeStartList.findIndex((val)=>val.timeStart===filteredSchedule[x].timeStart);
+          let end = timeStartList.findIndex((val)=>val.timeStart===filteredSchedule[x].timeEnd);
+  
+          for(let i = start; i<=end; i++){
+            indicesScheduleToRemain.push(i);
+          }
+        }
+        
+        updatedSchedList = updatedSchedList.filter((_,idx)=>{return indicesScheduleToRemain.includes(idx)});
+        
+      }
+      return updatedSchedList;
+    });
+    
     const filteredTime = newTimeList.filter((val) => 
       moment(appointmentDetails.date, 'YYYY-MM-DD').isSame(moment(), 'day') &&
       moment(val.timeStart, 'HH:mm:ss').isAfter(newHour)
@@ -110,7 +133,7 @@ const Schedule = ({ navigation, appointmentDetails, setAppointmentDetails }) => 
     setTimeStartList(prevTimeStartList=>{
       let updatedTimeList = [...prevTimeStartList];
       const getAllAppointment = appointment
-      .filter(val=>{return val.status === "PROCESSING" || val.status === "APPROVED" })
+      .filter(val=>{return val.status === "PROCESSING" || val.status === "APPROVED" || val.status === "TREATMENT" })
       .filter((val)=>{
         return moment(val.appointmentDate).format('LL') === moment(appointmentDetails.date).format('LL') ;
       });
@@ -125,7 +148,7 @@ const Schedule = ({ navigation, appointmentDetails, setAppointmentDetails }) => 
           const end = prevTimeStartList.findIndex((value)=>{
             return value.timeStart === getAllAppointment[x].timeEnd;
           });
-          for(let begin = start; begin<end; begin++){
+          for(let begin = start; begin<=end; begin++){
             indexesToRemove.push(begin);
           }
         }
@@ -144,7 +167,7 @@ const Schedule = ({ navigation, appointmentDetails, setAppointmentDetails }) => 
     let start = moment(value, "HH:mm:ss");
 
     const filteredAppointment = appointment.filter((val)=>{
-      return moment(val.appointmentDate).format('LL') === moment(appointmentDetails.date).format('LL') ;
+      return moment(val.appointmentDate).format('LL') === moment(appointmentDetails.date).format('LL') && val.patient.patientId === appointmentDetails.patient ;
     });
     if(filteredAppointment.length>0){
       return ToastFunction("error", "You have an existing appointment to this date!")
@@ -179,7 +202,7 @@ const Schedule = ({ navigation, appointmentDetails, setAppointmentDetails }) => 
       timeEnd:end,
       timeSubmitted:moment().format("HH:mm:ss")
     })
-    navigation.navigate("Dentist");
+    navigation.navigate("Payment");
   }
 
   const calculateTotalTime = (value)=>{

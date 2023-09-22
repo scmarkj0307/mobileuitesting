@@ -13,7 +13,7 @@ function Dentist({navigation, appointmentDetails, setAppointmentDetails}) {
             ...appointmentDetails,
             dentist:value
         });
-        navigation.navigate('Payment');
+        navigation.navigate('Schedule');
     }
     return (
         <ScrollView style={{maxHeight:height, padding:20, flexGrow:1, gap:10, flexDirection: 'column', position:'relative', zIndex:-50}}>

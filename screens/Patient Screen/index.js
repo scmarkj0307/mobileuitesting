@@ -14,11 +14,12 @@ import AppointmentDetails from './AppointmentDetails';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchPatient } from '../../redux/action/PatientAction';
 import Loader from '../../components/Loader';
-import { fetchAppointment,fetchChanges } from '../../redux/action/AppointmentAction';
+import { fetchAppointment,fetchChanges,adminChanges } from '../../redux/action/AppointmentAction';
 import { fetchAppointmentFee } from '../../redux/action/AppointmentFeeAction';
 import { fetchPatientMessage } from '../../redux/action/MessageAction';
 import { fetchPayment } from '../../redux/action/PaymentAction';
 import { fetchInstallmentByPatient } from '../../redux/action/InstallmentAction';
+import { fetchSchedule } from '../../redux/action/ScheduleAction';
 import Payment from './Payment';
 import Drawer from '../../components/CustomDrawer';
 import Message from './Message/index';
@@ -65,7 +66,8 @@ const Main = React.memo(({navigation})=> {
       dispatch(fetchAppointment(patient.patient.patientId));
       dispatch(fetchPatientMessage(patient.patient.patientId));
       dispatch(fetchPayment(patient.patient.patientId));
-      dispatch(fetchInstallmentByPatient(patient.patient.patientId))
+      dispatch(fetchInstallmentByPatient(patient.patient.patientId));
+      dispatch(fetchSchedule());
       dispatch(fetchAppointmentFee());
     }
   };
@@ -82,6 +84,10 @@ const Main = React.memo(({navigation})=> {
     socket.on("response_changes",(data)=>{
       dispatch(fetchChanges(data.value));
     })
+    socket.on("response_admin_changes",(data)=>{
+      dispatch(adminChanges(data.value));
+    })
+
 
     return ()=>{
       socket.off();

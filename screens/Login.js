@@ -33,6 +33,11 @@ const Login = React.memo(({navigation}) => {
       setUserData({ username: '', password: '' })
       navigation.navigate("Patient");
     }
+    if(patient.token === undefined){
+      dispatch(dentistLogin(userData));
+    }
+  }
+  const checkIfValidDentist = async() =>{
     if(!dentist.loading && dentist.token){
       await AsyncStorage.setItem('token', dentist.token.token);
       setUserData({ username: '', password: '' })
@@ -42,15 +47,15 @@ const Login = React.memo(({navigation}) => {
   useEffect(() => {
     checkIfValidAccount();
   }, [patient.loading, patient.token,dentist.token]);
-
+  useEffect(() => {
+    checkIfValidDentist();
+  }, [dentist.loading,dentist.token]);
   const loginButtonHandler = async() => {
     if (!userData.username || !userData.password) {
       return ToastFunction('error', 'Fill up empty field');
     }
     dispatch(loginPatientAccount(userData));
-    if(patient.token === ""){
-      dispatch(dentistLogin(userData));
-    }
+    
   };
   return (
       <View style={styles.containerWhite}>

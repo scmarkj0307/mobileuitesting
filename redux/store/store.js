@@ -9,6 +9,7 @@ import paymentReducer from '../reducer/PaymentReducer';
 import installmentReducer from '../reducer/InstallmentReducer';
 import messageReducer from '../reducer/MessageReducer';
 import appointmentFeeReducer from '../reducer/AppointmentFeeReducer';
+import scheduleReducer from '../reducer/ScheduleReducer';
 
 import thunk from 'redux-thunk';
 
@@ -23,7 +24,8 @@ export default configureStore({
     payment: paymentReducer,
     installment: installmentReducer,
     messages:messageReducer,
-    fee: appointmentFeeReducer
+    fee: appointmentFeeReducer,
+    schedule:scheduleReducer
   },
   middleware:[thunk]
 });

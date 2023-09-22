@@ -74,6 +74,19 @@ export const fetchChanges = (data)=>{
     }
 }
 
+export const adminChanges = (data)=>{
+    return async dispatch=>{
+        try {
+            dispatch({
+                type: CREATE_APPOINTMENT_SUCCESS,
+                payload:data
+            })
+        } catch (error) {
+            
+        }
+    }
+}
+
 export const createTreatment = (data) =>{
     return async dispatch=>{
         try {
