@@ -17,8 +17,8 @@ export default function CustomDrawer({navigation, isSideNavShow, setSideNavShow}
         active: true,
     },
     {
-        name: "Treatment",
-        link:"Treatment"
+        name: "Prescription",
+        link:"Prescription"
     },
   ]
 
@@ -40,7 +40,10 @@ export default function CustomDrawer({navigation, isSideNavShow, setSideNavShow}
                 </View>
                 <View>
                     <Text>Dr. {activeDentist?.fullname}</Text>
-                    <Text style={{fontSize:12,fontWeight:'bold',color:'#06b6d4'}}>View Profile</Text>
+                    <Text style={{fontSize:12,fontWeight:'bold',color:'#06b6d4'}} onPress={()=>{
+                        navigation("Details");
+                        setSideNavShow(false);
+                    }}>View Profile</Text>
                 </View>
             </View>
 

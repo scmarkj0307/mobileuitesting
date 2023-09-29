@@ -16,8 +16,8 @@ function Home({setSideNavShow}) {
     const [treatmentData, setTreatmentData] = useState(null);
 
 
-    // const currentPatient = appointment.filter((val)=>val.status==="PROCESSING" && moment(val.appointmentDate,"YYYY-MM-DD").isSame(moment(), 'day'));
-    const currentPatient = appointment.filter((val)=>val.status==="PROCESSING");
+    // const currentPatient = appointment.filter((val)=>val.status==="PROCESSING" );
+    const currentPatient = appointment.filter((val)=>val.status==="PROCESSING"||val.status==="TREATMENT_PROCESSING" && moment(val.appointmentDate,"YYYY-MM-DD").isSame(moment(), 'day'));
 
     return activeDentist && (
       <View style={{...styles.containerGray,height:height, width:width,position:'relative'}}>
@@ -37,7 +37,7 @@ function Home({setSideNavShow}) {
 
 
         <DentistCard header="Current Patient" data={currentPatient} setModal={setModal} setTreatmentData={setTreatmentData} />
-
+       
       </View>
     )
 }

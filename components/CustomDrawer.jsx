@@ -20,6 +20,14 @@ export default function CustomDrawer({navigation, isSideNavShow, setSideNavShow}
         name: "Payment",
         link:"Payment"
     },
+    {
+        name: "History",
+        link:"History"
+    },
+    {
+        name: "Prescription",
+        link:"Prescription"
+    },
   ]
 
   const logoutButton = async() =>{
@@ -40,7 +48,10 @@ export default function CustomDrawer({navigation, isSideNavShow, setSideNavShow}
                 </View>
                 <View>
                     <Text>{patient?.firstname}</Text>
-                    <Text style={{fontSize:12,fontWeight:'bold',color:'#06b6d4'}}>View Profile</Text>
+                    <Text style={{fontSize:12,fontWeight:'bold',color:'#06b6d4'}} onPress={()=>{
+                        navigation("ViewDetails");
+                        setSideNavShow(false);
+                    }}>View Profile</Text>
                 </View>
             </View>
 

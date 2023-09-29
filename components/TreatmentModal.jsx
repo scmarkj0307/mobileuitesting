@@ -310,38 +310,38 @@ function TreatmentModal({setModal,treatmentData}) {
                         <View style={{marginBottom:10}}>
                             <Text style={{fontSize:10,fontWeight:"bold",color:"#3f3f46",marginBottom:5}}>Select starting date</Text>
                             {
-                                showPicker&&(
-                                <DateTimePicker 
-                                    mode="date"
-                                    display='spinner'
-                                    value={date}
-                                    onChange={onChangeDate}
-                                    maximumDate={moment().endOf('year').toDate()} 
-                                    minimumDate={moment().toDate()} // Restrict selection of previous days
-                                    androidMode="calendar" 
-                                    {...(Platform.OS === 'ios' && { datePickerModeAndroid: 'spinner' })} 
-                                    {...(Platform.OS === 'ios' && { maximumDate: moment().endOf('year').toDate() })} 
-                                    {...(Platform.OS === 'android' && { minDate: moment().startOf('month').toDate() })} 
-                                    {...(Platform.OS === 'android' && { maxDate: moment().endOf('year').toDate() })} 
-                                    {...(Platform.OS === 'android' && { minDate: moment().toDate() })} 
-                                />
+                                showPicker && (
+                                    <DateTimePicker
+                                        mode="date"
+                                        display='spinner'
+                                        value={date}
+                                        onChange={onChangeDate}
+                                        maximumDate={moment().endOf('year').toDate()}
+                                        minimumDate={moment().add(1, 'day').toDate()} // Exclude the current day
+                                        androidMode="calendar"
+                                        {...(Platform.OS === 'ios' && { datePickerModeAndroid: 'spinner' })}
+                                        {...(Platform.OS === 'ios' && { maximumDate: moment().endOf('year').toDate() })}
+                                        {...(Platform.OS === 'android' && { minDate: moment().startOf('month').toDate() })}
+                                        {...(Platform.OS === 'android' && { maxDate: moment().endOf('year').toDate() })}
+                                        {...(Platform.OS === 'android' && { minDate: moment().toDate() })}
+                                    />
                                 )
                             }
                             {
-                            !showPicker&&(
-                            <Pressable
-                            style={{width:'100%'}}
-                            onPress={handleAppointmentStart}
-                            >
-                            <TextInput 
-                            value={dateRef.current} 
-                            editable={false} 
-                            style={{fontSize:12,borderWidth:0.5,borderColor:"#e4e4e7",paddingVertical:3, paddingHorizontal:10,backgroundColor:"#fafafa",color:"#3f3f46"}}
-                            onChangeText={onChangeText}
-                            placeholder={"Select Appointment Date"}
-                            />
-                            </Pressable>
-                            )
+                                !showPicker && (
+                                    <Pressable
+                                        style={{ width: '100%' }}
+                                        onPress={handleAppointmentStart}
+                                    >
+                                        <TextInput
+                                            value={dateRef.current}
+                                            editable={false}
+                                            style={{ fontSize: 12, borderWidth: 0.5, borderColor: "#e4e4e7", paddingVertical: 3, paddingHorizontal: 10, backgroundColor: "#fafafa", color: "#3f3f46" }}
+                                            onChangeText={onChangeText}
+                                            placeholder={"Select Appointment Date"}
+                                        />
+                                    </Pressable>
+                                )
                         }
                         </View>
                      </View>

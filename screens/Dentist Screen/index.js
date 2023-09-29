@@ -9,7 +9,8 @@ import { fetchServices } from "../../redux/action/ServicesAction";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Home from "./Home";
-import Treatment from "./Treatment/index";
+import Prescription from "./Prescription";
+import Details from "./ViewDetails";
 import Loader from "../../components/Loader";
 import Drawer from "../../components/DentistDrawer";
 
@@ -20,7 +21,8 @@ function Index({navigation}) {
   const patient = useSelector((state)=>{ return state.patient; });
   const appointment = useSelector((state=>{ return state.appointment }));
   const [isSideNavShow, setSideNavShow]= useState(false);
-  
+
+
   const navigateToLink = (link) => navigation.navigate(`${link}`);
   const fetchData = async() =>{
     const token = await AsyncStorage.getItem("token");
@@ -34,16 +36,19 @@ function Index({navigation}) {
    <>
     { (dentist.loading || appointment.loading ) && (<Loader loading={dentist.loading} />) }
     {
-      (!dentist.loading && !appointment.loading ) && (
+      (!dentist.loading  && !appointment.loading &&dentist ) && (
         <>
         <Drawer navigation={navigateToLink} isSideNavShow={isSideNavShow} setSideNavShow={setSideNavShow} />
-        <View style={{width:"100%", backgroundColor: '#155e75', height: 30 }}></View>
+        
         <Stack.Navigator initialRouteName='Dashboard'>
          <Stack.Screen name='Dashboard' options={{ headerShown: false }}>
            {props => <Home setSideNavShow={setSideNavShow} {...props} />}
          </Stack.Screen>
-         <Stack.Screen name="Treatment" options={{ headerShown: false }}>
-           {props => <Treatment {...props} />}
+         <Stack.Screen name="Prescription">
+           {props => <Prescription setSideNavShow={setSideNavShow} {...props} />}
+         </Stack.Screen>
+         <Stack.Screen name="Details" >
+           {props => <Details {...props} />}
          </Stack.Screen>
        </Stack.Navigator>
         </>

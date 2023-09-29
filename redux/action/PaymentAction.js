@@ -24,3 +24,13 @@ export const createPayment = (id, data) =>{
         }
     }
 }
+
+export const fetchAdminPayment = (id) =>{
+    return async dispatch =>{
+        try {
+            const response = await axios.get(`${PAYMENT_URL}/`);
+            dispatch({type:FETCH_PAYMENT_SUCCESS, payload:response.data.filter((val)=>{ return val.appointment.patient.patientId === id })});
+        } catch (error) {
+        }
+    }
+}

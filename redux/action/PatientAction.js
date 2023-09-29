@@ -1,7 +1,7 @@
 // Action Types
 import axios from 'axios';
 import { PATIENT_URL } from '../../config/APIRoutes';
-import { FETCH_PATIENT_REQUEST, FETCH_PATIENT_SUCCESS, FETCH_PATIENT_FAILED,ALL_PATIENT_FAILED, ALL_PATIENT_REQUEST, ALL_PATIENT_SUCCESS } from '../ActionType';
+import { FETCH_PATIENT_REQUEST, FETCH_PATIENT_SUCCESS, FETCH_PATIENT_FAILED,ALL_PATIENT_FAILED, ALL_PATIENT_REQUEST, ALL_PATIENT_SUCCESS, UPDATE_PATIENT_INFO_SUCCESS } from '../ActionType';
 
 
 export const fetchAllPatient = () => {
@@ -41,6 +41,20 @@ export const fetchPatient = (token) => {
         type: FETCH_PATIENT_FAILED,
         error: error.response.data.message, // or any other error handling logic you want
       });
+    }
+  };
+};
+
+// Action Creator
+export const updatePatientInfo = (id, data) => {
+  return async (dispatch) => {
+    try {
+      const response = await axios.put(`${PATIENT_URL}/update/patient/login/${id}`,data);
+      dispatch({
+        type: UPDATE_PATIENT_INFO_SUCCESS,
+        payload: response.data,
+      });
+    } catch (error) {
     }
   };
 };

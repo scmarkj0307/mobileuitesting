@@ -1,5 +1,5 @@
 import axios from "axios"
-import { CREATE_APPOINTMENT_FAILED, CREATE_APPOINTMENT_REQUEST, CREATE_APPOINTMENT_SUCCESS, DELETE_APPOINTMENT_FAILED, DELETE_APPOINTMENT_SUCCESS, FETCH_APPOINTMENT_FAILED, FETCH_APPOINTMENT_REQUEST, FETCH_APPOINTMENT_SUCCESS, RESPONSE_APPOINTMENT_SUCCESS } from "../ActionType"
+import { APPROVED_APPOINTMENT_SUCCESS, CREATE_APPOINTMENT_FAILED, CREATE_APPOINTMENT_REQUEST, CREATE_APPOINTMENT_SUCCESS, DELETE_APPOINTMENT_FAILED, DELETE_APPOINTMENT_SUCCESS, FETCH_APPOINTMENT_FAILED, FETCH_APPOINTMENT_REQUEST, FETCH_APPOINTMENT_SUCCESS, RESPONSE_APPOINTMENT_SUCCESS, UPDATE_APPOINTMENT_SUCCESS } from "../ActionType"
 import { APPOINTMENT_URL, SOCKET_LINK } from "../../config/APIRoutes"
 import moment from "moment";
 import * as io from "socket.io-client";
@@ -92,10 +92,25 @@ export const createTreatment = (data) =>{
         try {
             const response = await axios.post(`${APPOINTMENT_URL}/treatment`,data);
             dispatch({
-                type: CREATE_APPOINTMENT_SUCCESS,
+                type: UPDATE_APPOINTMENT_SUCCESS,
                 payload: response.data
             });
             socket.emit("appointment_changes",{value:response.data})
+        } catch (error) {
+            
+        }
+    }
+}
+
+export const approvedAppointment = (id) =>{
+    return async dispatch=>{
+        try {
+            const response = await axios.put(`${APPOINTMENT_URL}/status/done/${id}`);
+            dispatch({
+                type: APPROVED_APPOINTMENT_SUCCESS,
+                payload: response.data
+            });
+            socket.emit("appointment_changes",{value:response.data});
         } catch (error) {
             
         }

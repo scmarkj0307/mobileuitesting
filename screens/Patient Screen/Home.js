@@ -31,7 +31,7 @@ const Home = React.memo(({navigation,setAppointmentId,setSideNavShow})=>{
 
     
     const currentDate = moment(new Date()).format("LL");
-    const todaysAppointment = appointment.filter((val)=>{  return moment(val.appointmentDate,"YYYY-MM-DD").isSame(moment(), 'day') && val.status === "APPROVED" || val.status === "PROCESSING" && val.patient.patientId === patient?.patientId; });
+    const todaysAppointment = appointment.filter((val)=>{  return moment(val.appointmentDate,"YYYY-MM-DD").isSame(moment(), 'day') && val.status === "APPROVED" || val.status === "PROCESSING" || val.status === "TREATMENT" && val.patient.patientId === patient?.patientId; });
     const upcomingAppointment = appointment.filter(val=>{ 
       return currentDate !== moment(val.appointmentDate).format('LL') && moment().isBefore(moment(val.appointmentDate)) && val.patient.patientId === patient?.patientId && val.status === "APPROVED";
     });
@@ -132,7 +132,6 @@ const Home = React.memo(({navigation,setAppointmentId,setSideNavShow})=>{
 
           {/* Body */}
           <View style={{ width: '100%', height: 180, backgroundColor: '#0891b2', padding: 10, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', rowGap: 10, position:'relative', borderBottomLeftRadius:20, borderBottomRightRadius:20 }}>
-            <Button title='Click' onPress={sendNotif} />
            
           </View>
 

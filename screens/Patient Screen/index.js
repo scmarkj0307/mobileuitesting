@@ -17,12 +17,17 @@ import Loader from '../../components/Loader';
 import { fetchAppointment,fetchChanges,adminChanges } from '../../redux/action/AppointmentAction';
 import { fetchAppointmentFee } from '../../redux/action/AppointmentFeeAction';
 import { fetchPatientMessage } from '../../redux/action/MessageAction';
-import { fetchPayment } from '../../redux/action/PaymentAction';
+import { fetchPayment,fetchAdminPayment } from '../../redux/action/PaymentAction';
 import { fetchInstallmentByPatient } from '../../redux/action/InstallmentAction';
 import { fetchSchedule } from '../../redux/action/ScheduleAction';
+import { fetchPrescription } from '../../redux/action/PrescriptionAction';
 import Payment from './Payment';
 import Drawer from '../../components/CustomDrawer';
 import Message from './Message/index';
+import History from './History';
+import ViewDetails from './ViewDetails';
+import Prescription from './Prescription';
+import PrescriptionDetails from './PrescriptionDetails';
 import * as io from "socket.io-client";
 import { log } from 'react-native-reanimated';
 
@@ -49,6 +54,7 @@ const navLinks = [
 const Main = React.memo(({navigation})=> {
   const dispatch = useDispatch();
   const Stack = createNativeStackNavigator();
+  const [prescriptionDetails, setPrescriptionDetails] = useState(null);
 
   const [isSideNavShow, setSideNavShow]= useState(false);
   const [appointmentId, setAppointmentId] = useState("");
@@ -67,6 +73,7 @@ const Main = React.memo(({navigation})=> {
       dispatch(fetchPatientMessage(patient.patient.patientId));
       dispatch(fetchPayment(patient.patient.patientId));
       dispatch(fetchInstallmentByPatient(patient.patient.patientId));
+      dispatch(fetchPrescription(patient.patient.patientId))
       dispatch(fetchSchedule());
       dispatch(fetchAppointmentFee());
     }
@@ -86,6 +93,7 @@ const Main = React.memo(({navigation})=> {
     })
     socket.on("response_admin_changes",(data)=>{
       dispatch(adminChanges(data.value));
+      dispatch(fetchAdminPayment(patient.patient.patientId));
     })
 
 
@@ -119,6 +127,18 @@ const Main = React.memo(({navigation})=> {
                 </Stack.Screen>
                 <Stack.Screen name='Summary' options={{headerTitle:"Appointment Details" }}>
                     {props=><AppointmentDetails appointmentId={appointmentId} setAppointmentId={setAppointmentId} {...props}/>}
+                </Stack.Screen>
+                <Stack.Screen name='ViewDetails'>
+                    {props=><ViewDetails {  ...props}/>}
+                </Stack.Screen>
+                <Stack.Screen name='History' options={{headerShown: false }}>
+                    {props=><History {  ...props}/>}
+                </Stack.Screen>
+                <Stack.Screen name='Prescription' options={{headerShown: false }}>
+                    {props=><Prescription setPrescriptionDetails={setPrescriptionDetails} {  ...props}/>}
+                </Stack.Screen>
+                <Stack.Screen name='Prescription Details' >
+                    {props=><PrescriptionDetails prescriptionDetails={prescriptionDetails} {  ...props}/>}
                 </Stack.Screen>
         
             </Stack.Navigator>

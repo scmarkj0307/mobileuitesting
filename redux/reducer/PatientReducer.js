@@ -8,7 +8,8 @@ import {
   FETCH_PATIENT_REQUEST,
   FETCH_PATIENT_SUCCESS,
   LOGIN_PATIENT_REQUEST,
-  LOGOUT_PATIENT_SUCCESS
+  LOGOUT_PATIENT_SUCCESS,
+  UPDATE_PATIENT_INFO_SUCCESS
 } from '../ActionType';
 
 const initialState = {
@@ -30,6 +31,12 @@ const patientReducer = (state = {}, action) => {
         loading:false
       }
     case FETCH_PATIENT_SUCCESS:
+      return {
+        ...state,
+        patient: action.payload, // Update patient with action.payload
+        loading: false,
+      };
+    case UPDATE_PATIENT_INFO_SUCCESS:
       return {
         ...state,
         patient: action.payload, // Update patient with action.payload

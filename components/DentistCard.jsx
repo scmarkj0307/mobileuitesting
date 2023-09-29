@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import { View, Text,Image,Pressable } from "react-native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import { approvedAppointment } from "../redux/action/AppointmentAction";
 import Octicons from "react-native-vector-icons/Octicons";
+import { useDispatch } from 'react-redux';
 
 function DentistCard({header, data,setModal,setTreatmentData}) {
     const [dropToggle, setDropToggle] = useState(false);
+    const dispatch = useDispatch();
     // console.log(...data);
     return (
         <View style={{width:"100%",paddingVertical:15, paddingHorizontal:10, height:"auto"}}>
@@ -19,10 +22,12 @@ function DentistCard({header, data,setModal,setTreatmentData}) {
                             <View style={{flex:1,justifyContent:'space-between', flexDirection:'row',}}>
                                 <View>
                                     <Text style={{fontSize:14}}>{val.patient.firstname} {val.patient.lastname}</Text>
-                                    <Text style={{fontSize:12,color:"#06b6d4", fontWeight:'bold',textTransform:'capitalize',textDecorationLine:'underline'}} onPress={()=>setDropToggle((prev)=>!prev)}>See Services</Text>
+                                    <Text style={{fontSize:12,color:"#06b6d4", fontWeight:'bold',textTransform:'capitalize',textDecorationLine:'underline'}} onPress={()=>setDropToggle((prev)=>!prev)}>{val.status}</Text>
                                     
                                 </View>
-                                <View style={{display:'flex',flexDirection:'row', gap:8}}>
+                               {
+                                (val.status === "PROCESSING" || val.status === "TREATMENT_PROCESSING") && (
+                                    <View style={{display:'flex',flexDirection:'row', gap:8}}>
                                     {/* {
                                         val.status === "PROCESSING" && (
                                             <> */}
@@ -32,8 +37,8 @@ function DentistCard({header, data,setModal,setTreatmentData}) {
                                             }}>
                                                 <Octicons name='checklist' size={20} color={"#fff"} />
                                             </Pressable>
-                                            <Pressable style={{padding:10,backgroundColor:"#06b6d4",borderRadius:100}}>
-                                                <MaterialIcons name='done' size={20} color={"#fff"} onPress={()=>setDropToggle(!dropToggle)} />
+                                            <Pressable style={{padding:10,backgroundColor:"#06b6d4",borderRadius:100}} onPress={()=>dispatch(approvedAppointment(val.appointmentId))}>
+                                                <MaterialIcons name='done' size={20} color={"#fff"} />
                                             </Pressable>
                                             
                                             
@@ -45,6 +50,8 @@ function DentistCard({header, data,setModal,setTreatmentData}) {
                                         )
                                     } */}
                                 </View>
+                                )
+                               }
                             </View>
                         </View>
                     ))

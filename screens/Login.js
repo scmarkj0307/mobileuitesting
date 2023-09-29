@@ -9,14 +9,16 @@ import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginPatientAccount } from '../redux/action/PatientVerification';
-import { dentistLogin } from '../redux/action/DentistAction';
+import { fetchAllPatient } from '../redux/action/PatientAction';
+import { dentistLogin,fetchDentists } from '../redux/action/DentistAction';
 import Loader from '../components/Loader';
 
 const Login = React.memo(({navigation}) => {
   const navigate = useNavigation();
   const dispatch = useDispatch();
-  const patient = useSelector((state)=>{return state.patientVerification});
+  const patientVerification = useSelector((state)=>{return state.patientVerification});
   const dentist = useSelector((state)=>{return state.dentist });
+  const patient = useSelector((state)=>{return state.patient.patientList});
   const [userData, setUserData] = useState({
     username: '',
     password: ''
@@ -27,14 +29,16 @@ const Login = React.memo(({navigation}) => {
     setUserData({ ...userData, [name]: value });
   };
 
+  useEffect(()=>{
+    dispatch(fetchAllPatient());
+    dispatch(fetchDentists());
+  },[]);
+
   const checkIfValidAccount = async() =>{
-    if(!patient.loading && patient.token){
-      await AsyncStorage.setItem('token', patient.token.token);
+    if(!patientVerification.loading && patientVerification.token){
+      await AsyncStorage.setItem('token', patientVerification.token.token);
       setUserData({ username: '', password: '' })
       navigation.navigate("Patient");
-    }
-    if(patient.token === undefined){
-      dispatch(dentistLogin(userData));
     }
   }
   const checkIfValidDentist = async() =>{
@@ -44,18 +48,31 @@ const Login = React.memo(({navigation}) => {
       navigation.navigate("Dentist");
     }
   }
+
   useEffect(() => {
     checkIfValidAccount();
-  }, [patient.loading, patient.token,dentist.token]);
+  }, [patientVerification.loading, patientVerification.token]);
+
   useEffect(() => {
     checkIfValidDentist();
   }, [dentist.loading,dentist.token]);
+
+  
   const loginButtonHandler = async() => {
     if (!userData.username || !userData.password) {
       return ToastFunction('error', 'Fill up empty field');
     }
-    dispatch(loginPatientAccount(userData));
-    
+    const isPatient = patient.filter((val)=>val.username.includes(userData.username));
+    const isDentist = dentist.dentists.filter((val)=>val.username.includes(userData.username));
+    if(isPatient.length < 1 && isDentist.length<1){
+      return ToastFunction('error', "Account doesn't exist!");
+    }
+    if(isPatient.length){
+      dispatch(loginPatientAccount(userData));
+    }
+    if(isDentist.length){
+      dispatch(dentistLogin(userData));
+    }
   };
   return (
       <View style={styles.containerWhite}>

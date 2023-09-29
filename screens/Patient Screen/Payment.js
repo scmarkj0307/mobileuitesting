@@ -16,7 +16,8 @@ const Payment = ({navigation}) =>{
     const [page, setPage] = useState("cash")
     const { loading, payment } = useSelector((state)=>{return state.payment});
     const { patient } = useSelector((state)=>{ return state.patient });
-    const { installment } = useSelector((state)=>{ return state.installment });
+    // const { installment } = useSelector((state)=>{ return state.installment });
+    const installment = payment.filter((val)=> val.type==="installment")
     const [selectedPayment, setSelectedPayment] = useState({
         id:"",
         isActive: false,
@@ -103,7 +104,7 @@ const Payment = ({navigation}) =>{
         )
     }
 
-    const totalAmount = installment?.reduce((acc,val)=>{ return acc+=val.installmentAmount; },0);
+    const totalAmount = installment.reduce((acc,val)=>{ return acc+=val.totalPayment; },0);
     return !loading && payment  &&installment&& (
        <>
         { selectedPayment.isActive && <Modal />}
@@ -118,7 +119,7 @@ const Payment = ({navigation}) =>{
                     <ScrollView style={{width:"100%",height:100, paddingHorizontal:20, }}>
                         <View style={{width:"100%", backgroundColor:"#0891b2", paddingVertical:15, paddingHorizontal:8, display:'flex', flexDirection:'row',justifyContent:'space-between',borderRadius:10}}>
                             <Text style={{color:"#fff",fontWeight:'bold',fontSize:16}}>Total Amount:</Text>
-                            <Text style={{color:"#fff",fontSize:16}}>₱ {totalAmount.toLocaleString()}</Text>
+                            <Text style={{color:"#fff",fontSize:16}}>₱ {Math.ceil(totalAmount).toLocaleString()}</Text>
                         </View>
                         <View style={{width:"100%",height:"auto", paddingHorizontal:10,paddingVertical:15,backgroundColor:"#fff",marginTop:10,borderRadius:10,display:'flex',flexDirection:'column'}}>
                            <Text style={{width:"100%", borderBottomWidth:1,borderBottomColor:"#0891b2",fontSize:16,paddingBottom:10,fontWeight:'bold',color:"#52525b"}}>Payment Schedule</Text>
@@ -126,8 +127,8 @@ const Payment = ({navigation}) =>{
                            {
                             installment.map((val,idx)=>(
                                 <View key={idx} style={{flex:1, flexDirection:'row', justifyContent:'space-between'}}>
-                                    <Text style={{fontSize:12}}>{moment(val.dueDate).format("ddd DD MMM,YYYY")}</Text>
-                                    <Text style={{fontSize:12}}>₱{val.installmentAmount.toLocaleString()}</Text>
+                                    <Text style={{fontSize:12}}>{moment(val.appointment.appointmentDate).format("ddd DD MMM,YYYY")}</Text>
+                                    <Text style={{fontSize:12}}>₱{Math.ceil(val.totalPayment).toLocaleString()}</Text>
                                     <Text style={{fontSize:11, 
                                     textTransform:'capitalize',
                                     borderRadius:20,

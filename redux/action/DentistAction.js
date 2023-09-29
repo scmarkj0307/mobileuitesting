@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { FETCH_DENTIST_REQUEST, FETCH_DENTIST_SUCCESS, FETCH_DENTIST_FAILED, LOGIN_DENTIST_SUCCESS, ACTIVE_DENTIST_SUCCESS, ACTIVE_DENTIST_REQUEST, LOGOUT_DENTIST_SUCCESS } from '../ActionType';
+import { FETCH_DENTIST_REQUEST, FETCH_DENTIST_SUCCESS, FETCH_DENTIST_FAILED, LOGIN_DENTIST_SUCCESS, ACTIVE_DENTIST_SUCCESS, ACTIVE_DENTIST_REQUEST, LOGOUT_DENTIST_SUCCESS, UPDATE_DENTIST_INFO_SUCCESS } from '../ActionType';
 import { DENTIST_URL } from '../../config/APIRoutes';
 import ToastFunction from '../../config/toastConfig';
 
@@ -51,6 +51,20 @@ export const fetchActiveDentist = (token) =>{
             console.log("Dentist");
         }
     } 
+}
+
+export const updateDentistInfo = (id, data)=>{
+    return async dispatch=>{
+        try {
+            const response = await axios.put(`${DENTIST_URL}/update/dentist/login/${id}`,data);
+            dispatch({
+                type: UPDATE_DENTIST_INFO_SUCCESS,
+                payload: response.data,
+            })
+        } catch (error) {
+            
+        }
+    }
 }
 
 export const logoutDentist = () => {
