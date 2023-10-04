@@ -166,9 +166,12 @@ const Schedule = ({ navigation, appointmentDetails, setAppointmentDetails }) => 
     const totalTimeDuration = moment('00:00:00', 'HH:mm:ss');
     let start = moment(value, "HH:mm:ss");
 
-    const filteredAppointment = appointment.filter((val)=>{
-      return moment(val.appointmentDate).format('LL') === moment(appointmentDetails.date).format('LL') && val.patient.patientId === appointmentDetails.patient ;
+    const filteredAppointment = appointment.filter((val) => {
+      return (val.status !== "DONE" && val.status !== "CANCELLED")
+        && moment(val.appointmentDate).isSame(moment(appointmentDetails.date), "day")
+        && val.patient.patientId === appointmentDetails.patient;
     });
+    console.log(filteredAppointment.length);
     if(filteredAppointment.length>0){
       return ToastFunction("error", "You have an existing appointment to this date!")
     }
